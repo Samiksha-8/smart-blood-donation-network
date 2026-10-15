@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | BloodNet</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <style>
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #ef2b2d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        .profile-header {
+            margin-bottom: 30px;
+        }
+
+        .profile-header h1 {
+            margin: 0 0 8px;
+            color: #0f172a;
+        }
+
+        .profile-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .form-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 15px;
+            border: 1px solid #dbe3ec;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #ef2b2d;
+        }
+
+        .save-button {
+            border: none;
+            background: #ef2b2d;
+            color: white;
+            padding: 13px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="profile-container">
+
+    <a href="{{ url_for('receiver.dashboard') }}" class="back-link">
+        ← Back to Dashboard
+    </a>
+
+    <div class="profile-card">
+
+        <div class="profile-header">
+
+            <h1>My Profile</h1>
+
+            <p>
+                View and update your personal information.
+            </p>
+
+        </div>
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label for="full_name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    value="{{ user.full_name }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ user.email }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone
+                </label>
+
+                <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    value="{{ user.phone }}"
+                    required
+                >
+
+            </div>
+
+
+            <button type="submit" class="save-button">
+                Save Changes
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

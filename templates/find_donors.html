@@ -1,0 +1,403 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Find Donors | Smart Blood Donation Network</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/find_donors.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <div class="logo-icon">❤</div>
+            <span>BloodNet</span>
+        </div>
+
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">MAIN</p>
+
+            <a href="{{ url_for('receiver.dashboard') }}" class="sidebar-link">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('receiver.find_donors') }}"
+               class="sidebar-link active">
+                <span>📍</span>
+                Find Donors
+            </a>
+
+            <a href="{{ url_for('receiver.my_requests') }}" class="sidebar-link">
+    <span>🩸</span>
+    My Requests
+</a>
+
+    
+
+        </div>
+
+
+        <div class="sidebar-section activity-section">
+
+            <p class="sidebar-label">YOUR ACTIVITY</p>
+
+            <a href="{{ url_for('receiver.profile') }}" class="sidebar-link">
+    <span>👤</span>
+    My Profile
+</a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            
+
+            <a href="/" class="sidebar-link">
+                <span>↪</span>
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <div class="top-bar">
+
+            <div>
+                <h1>Find Donors</h1>
+
+                <p>
+                    Find eligible blood donors near your location.
+                </p>
+            </div>
+
+
+            <div class="user-info">
+
+                <div class="user-avatar">
+    {{ user_name[0] }}{{ user_name.split(' ')[-1][0] if ' ' in user_name else '' }}
+</div>
+
+<div>
+    <strong>{{ user_name }}</strong>
+    <span>Blood Recipient</span>
+</div>
+
+            </div>
+
+        </div>
+
+
+       <!-- ================= REQUEST SUMMARY ================= -->
+
+<section class="request-summary">
+
+    <div class="summary-heading">
+
+        <div>
+            <span class="panel-label">
+                ACTIVE BLOOD REQUEST
+            </span>
+
+            <h2>
+                Donors needed for {{ blood_request.blood_group }} blood
+            </h2>
+
+            <p>
+                {{ blood_request.hospital_name }} · {{ blood_request.city }}
+            </p>
+        </div>
+
+        <span class="status-badge">
+            {{ blood_request.status }}
+        </span>
+
+    </div>
+
+
+    <div class="request-meta">
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                BLOOD GROUP
+            </span>
+
+            <strong>
+                {{ blood_request.blood_group }}
+            </strong>
+
+        </div>
+
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                UNITS REQUIRED
+            </span>
+
+            <strong>
+                {{ blood_request.units_required }} Units
+            </strong>
+
+        </div>
+
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                URGENCY
+            </span>
+
+            <strong class="urgent">
+                {{ blood_request.urgency }}
+            </strong>
+
+        </div>
+
+
+        <div class="meta-item">
+
+            <span class="meta-label">
+                SEARCH AREA
+            </span>
+
+            <strong>
+                {{ blood_request.city }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+        <!-- ================= SEARCH / FILTER ================= -->
+
+        <section class="filter-panel">
+
+            <div class="filter-header">
+
+                <div>
+                    <span class="panel-label">
+                        DONOR SEARCH
+                    </span>
+
+                    <h2>Search for donors</h2>
+                </div>
+
+                <span class="donor-count">
+    {{ donors|length }} eligible donor{% if donors|length != 1 %}s{% endif %}
+</span>
+
+            </div>
+
+
+           <form method="GET"
+      action="{{ url_for('receiver.find_donors') }}"
+      class="filter-grid">
+
+    <input type="hidden"
+           name="request_id"
+           value="{{ blood_request.request_id }}">
+
+    <div class="filter-field">
+
+        <label for="search-area">
+            Search Area
+        </label>
+
+        <select id="search-area" name="expanded">
+
+            <option value="0"
+                {% if not expand_search %}selected{% endif %}>
+                Same City
+            </option>
+
+            <option value="1"
+                {% if expand_search %}selected{% endif %}>
+                All Cities
+            </option>
+
+        </select>
+
+    </div>
+
+    <button type="submit" class="search-button">
+        Search Donors
+    </button>
+
+</form>
+
+        </section>
+
+
+        <!-- ================= NETWORK INFO ================= -->
+
+        <section class="network-info">
+
+            <div class="network-icon">
+                📍
+            </div>
+
+            <div>
+
+                <strong>
+                    Nearby eligible donors are shown first
+                </strong>
+
+                <p>
+                    The network prioritizes eligible donors closer
+                    to your location before expanding the search area.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= DONOR LIST ================= -->
+
+        <section class="donor-section">
+
+            <div class="section-header">
+
+                <div>
+                    <span class="panel-label">
+                        MATCHED DONORS
+                    </span>
+
+                    <h2>
+                        Recommended donors
+                    </h2>
+                </div>
+
+                <span class="sort-label">
+                    Nearest first
+                </span>
+
+            </div>
+
+
+{% if donors %}
+
+    {% for item in donors %}
+
+        <div class="donor-card">
+
+            <div class="donor-main">
+
+                <div class="donor-avatar">
+                    {{ item.user.full_name[:2].upper() }}
+                </div>
+
+                <div class="donor-details">
+
+                    <h3>
+                        {{ item.user.full_name }}
+                    </h3>
+
+                    <div class="donor-tags">
+
+                        <span class="blood-tag">
+                            {{ item.donor.blood_group }}
+                        </span>
+
+                        <span class="eligible-tag">
+                            ✓ Eligible
+                        </span>
+
+                    </div>
+
+                    <p>
+                        📍 {{ item.donor.city }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="donor-status">
+
+                <span class="availability">
+                    ● Available
+                </span>
+
+                <button class="contact-button">
+                    Contact Donor
+                </button>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="donor-card">
+
+        <div class="donor-main">
+
+            <div class="donor-details">
+
+                <h3>
+                    No eligible donors found
+                </h3>
+
+                <p>
+                    No compatible and currently eligible donors are available
+                    for this request.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endif %}
+       
+
+
+    </main>
+
+</div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+</body>
+</html>
+```

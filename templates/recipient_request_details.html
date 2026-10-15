@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Details | BloodNet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/theme.css') }}"
+    >
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 25px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #ef2b2d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .request-card,
+        .donors-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .blood-section {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .blood-badge {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            background: #fff0f0;
+            color: #ef2b2d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .blood-section h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .blood-section p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .request-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            padding-top: 25px;
+        }
+
+        .detail-label {
+            display: block;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .urgency {
+            color: #ef2b2d;
+        }
+
+        .donors-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .donors-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .donor-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .donor-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .donor-info h3 {
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .donor-info p {
+            margin: 5px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .donor-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .blood-tag {
+            background: #fff0f0;
+            color: #ef2b2d;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .accepted-tag {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .donation-button {
+            border: none;
+            background: #ef2b2d;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .donation-button:hover {
+            background: #d92325;
+        }
+
+        .empty-state {
+            padding: 30px;
+            text-align: center;
+            background: #f8fafc;
+            border-radius: 12px;
+            color: #64748b;
+        }
+
+        @media (max-width: 750px) {
+            .request-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .request-header,
+            .donor-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <a
+        href="{{ url_for('receiver.my_requests') }}"
+        class="back-link"
+    >
+        ← Back to My Requests
+    </a>
+
+    <div class="page-header">
+        <h1>Blood Request Details</h1>
+        <p>View your request and donor responses.</p>
+    </div>
+
+
+    <!-- REQUEST DETAILS -->
+
+    <section class="request-card">
+
+        <div class="request-header">
+
+            <div class="blood-section">
+
+                <div class="blood-badge">
+                    {{ blood_request.blood_group }}
+                </div>
+
+                <div>
+                    <h2>
+                        {{ blood_request.blood_group }} blood needed
+                    </h2>
+
+                    <p>
+                        {{ blood_request.hospital_name }}
+                        · {{ blood_request.city }}
+                    </p>
+                </div>
+
+            </div>
+
+            <span class="status-badge">
+                {{ blood_request.status }}
+            </span>
+
+        </div>
+
+
+        <div class="request-grid">
+
+            <div>
+                <span class="detail-label">
+                    Blood Group
+                </span>
+
+                <span class="detail-value">
+                    {{ blood_request.blood_group }}
+                </span>
+            </div>
+
+
+            <div>
+                <span class="detail-label">
+                    Units Required
+                </span>
+
+                <span class="detail-value">
+                    {{ blood_request.units_required }}
+                </span>
+            </div>
+
+
+            <div>
+                <span class="detail-label">
+                    Hospital
+                </span>
+
+                <span class="detail-value">
+                    {{ blood_request.hospital_name }}
+                </span>
+            </div>
+
+
+            <div>
+                <span class="detail-label">
+                    Urgency
+                </span>
+
+                <span class="detail-value urgency">
+                    {{ blood_request.urgency }}
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DONOR RESPONSES -->
+
+    <section class="donors-card">
+
+        <div class="donors-header">
+
+            <h2>
+                Donor Responses
+            </h2>
+
+            <span>
+                {{ accepted_donors|length }} accepted
+            </span>
+
+        </div>
+
+
+        {% if accepted_donors %}
+
+            {% for item in accepted_donors %}
+
+                <div class="donor-card">
+
+                    <div class="donor-top">
+
+                        <div class="donor-info">
+
+                            <h3>
+                                {{ item.user.full_name }}
+                            </h3>
+
+                            <div class="donor-tags">
+
+                                <span class="blood-tag">
+                                    {{ item.donor.blood_group }}
+                                </span>
+
+                                <span class="accepted-tag">
+                                    ✓ Accepted
+                                </span>
+
+                            </div>
+
+                            <p>
+                                📍 {{ item.donor.city }}
+                            </p>
+
+                            <p>
+                                📞 {{ item.user.phone }}
+                            </p>
+
+                            <p>
+                                Accepted at:
+                                {{ item.response.response_time }}
+                            </p>
+
+                        </div>
+
+
+                        {% if blood_request.status != "Completed" %}
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'receiver.record_donation',
+                                    request_id=blood_request.request_id,
+                                    donor_id=item.donor.donor_id
+                                ) }}"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="donation-button"
+                                >
+                                    ✓ Mark Donation Completed
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <h3>No donor has accepted yet</h3>
+
+                <p>
+                    Eligible donors who accept this request
+                    will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+</body>
+</html>

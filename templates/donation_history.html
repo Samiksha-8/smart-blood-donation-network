@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Donation History | BloodNet</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/theme.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <a
+        href="{{ url_for('home') }}"
+        class="dashboard-logo"
+    >
+
+        <div class="dashboard-logo-icon">
+            ❤
+        </div>
+
+        <span>
+            BloodNet
+        </span>
+
+    </a>
+
+
+    <nav class="sidebar-nav">
+
+        <p class="nav-label">
+            MAIN
+        </p>
+
+
+        <a
+            href="{{ url_for('donor.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            Dashboard
+        </a>
+
+
+        <a
+            href="{{ url_for('donor.requests') }}"
+            class="sidebar-link"
+        >
+            <span>🩸</span>
+            Blood Requests
+        </a>
+
+
+        <p class="nav-label">
+            YOUR ACTIVITY
+        </p>
+
+
+        <a
+            href="{{ url_for('donor.donation_history') }}"
+            class="sidebar-link active"
+        >
+            <span>📋</span>
+            Donation History
+        </a>
+
+
+        <a
+            href="{{ url_for('donor.profile') }}"
+            class="sidebar-link"
+        >
+            <span>👤</span>
+            My Profile
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="sidebar-link logout-link"
+        >
+            <span>↪</span>
+            Logout
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="dashboard-main">
+
+
+    <header class="dashboard-header">
+
+        <div>
+
+            <p class="dashboard-eyebrow">
+                YOUR ACTIVITY
+            </p>
+
+            <h1>
+                Donation History
+            </h1>
+
+            <p class="dashboard-subtitle">
+                View your previous blood donations.
+            </p>
+
+        </div>
+
+
+        <div class="header-profile">
+
+            <div class="header-avatar">
+                {{ session.get("user_name", "D")[0] | upper }}
+            </div>
+
+            <div class="header-user">
+
+                <strong>
+                    {{ session.get("user_name", "Donor") }}
+                </strong>
+
+                <span>
+                    Blood Donor
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <section class="dashboard-card history-summary-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-kicker">
+                    DONOR INFORMATION
+                </span>
+
+                <h2>
+                    Donation Summary
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="history-summary-grid">
+
+
+            <div class="history-summary-item">
+
+                <span>
+                    Blood Group
+                </span>
+
+                <strong>
+                    {{ donor.blood_group }}
+                </strong>
+
+            </div>
+
+
+            <div class="history-summary-item">
+
+                <span>
+                    Total Donations
+                </span>
+
+                <strong>
+                    {{ history|length }}
+                </strong>
+
+            </div>
+
+
+            <div class="history-summary-item">
+
+                <span>
+                    Last Donation
+                </span>
+
+                <strong>
+
+    {% if donor.last_donation_date %}
+        {{ donor.last_donation_date.strftime('%d %b %Y') }}
+    {% else %}
+        No donation yet
+    {% endif %}
+
+</strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= DONATION RECORDS ================= -->
+
+    <section class="dashboard-card donation-records-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-kicker">
+                    RECORDS
+                </span>
+
+                <h2>
+                    Previous Donations
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        {% if history %}
+
+        <div class="donation-history-list">
+
+
+            {% for donation in history %}
+
+            <div class="donation-history-item">
+
+
+                <div class="donation-history-icon">
+                    🩸
+                </div>
+
+
+                <div class="donation-history-info">
+
+                    <strong>
+                        Blood donation completed
+                    </strong>
+
+                    <p>
+                        {{ donation.units_donated }}
+                        unit(s) donated
+                    </p>
+
+                    <span>
+                        Request #{{ donation.request_id }}
+                    </span>
+
+                </div>
+
+
+                <div class="donation-history-date">
+
+                    <span>
+                        Donation Date
+                    </span>
+
+                    <strong>
+
+                        {{ donation.donation_date.strftime('%d %b %Y') }}
+
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty-activity">
+
+            <div class="empty-icon">
+                🩸
+            </div>
+
+            <div>
+
+                <strong>
+                    No donations recorded yet
+                </strong>
+
+                <p>
+                    Your donation history will appear here
+                    after your first donation.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% endif %}
+
+    </section>
+
+
+</main>
+
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+</body>
+
+</html>

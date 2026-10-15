@@ -1,0 +1,93 @@
+/* =========================================
+   GLOBAL THEME
+========================================= */
+
+:root {
+    --primary: #DC2626;
+    --primary-dark: #B91C1C;
+
+    --text: #0F172A;
+    --muted: #64748B;
+
+    --background: #F8FAFC;
+    --surface: #FFFFFF;
+    --surface-secondary: #F1F5F9;
+
+    --border: #E2E8F0;
+
+    --input-bg: #FFFFFF;
+    --header-bg: rgba(255,255,255,0.82);
+
+    --shadow: 0 10px 35px rgba(15,23,42,.08);
+}
+
+
+/* =========================================
+   DARK THEME
+========================================= */
+
+html[data-theme="dark"] {
+
+    --primary: #EF4444;
+    --primary-dark: #DC2626;
+
+    --text: #F8FAFC;
+    --muted: #94A3B8;
+
+    --background: #0F172A;
+    --surface: #1E293B;
+    --surface-secondary: #172033;
+
+    --border: #334155;
+
+    --input-bg: #1E293B;
+    --header-bg: rgba(15,23,42,0.92);
+
+    --shadow: 0 10px 35px rgba(0,0,0,.30);
+}
+
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+html,
+body {
+    background: var(--background);
+    color: var(--text);
+    transition:
+        background-color .3s ease,
+        color .3s ease;
+}
+
+
+* {
+    transition:
+        background-color .3s ease,
+        border-color .3s ease,
+        color .3s ease;
+}
+/* ========================================
+   LIGHT THEME
+======================================== */
+
+:root {
+    --bg-color: #ffffff;
+    --text-color: #111827;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --muted-text: #64748b;
+}
+
+
+/* ========================================
+   DARK THEME
+======================================== */
+
+[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-color: #f8fafc;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --muted-text: #94a3b8;
+}

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Account | Smart Blood Donation Network</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/auth.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="auth-header">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="auth-logo"
+        >
+
+            <div class="auth-logo-icon">
+                ❤
+            </div>
+
+            <span>
+                Smart Blood Donation Network
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="back-home"
+        >
+            ← Back to home
+        </a>
+
+    </header>
+
+
+
+    <!-- =========================================
+         REGISTRATION PAGE
+    ========================================== -->
+
+    <main class="auth-page">
+
+        <div class="register-container">
+
+
+            <!-- =================================
+                 INTRO
+            ================================== -->
+
+            <section class="register-intro">
+
+                <span class="auth-badge">
+                    Join the network
+                </span>
+
+                <h1>
+                    Be part of a
+                    <span>life-saving network.</span>
+                </h1>
+
+                <p>
+                    Create your account to connect with people
+                    who need blood or become a donor in your area.
+                </p>
+
+
+                <div class="register-visual">
+
+                    <div class="register-heart">
+                        ❤
+                    </div>
+
+                    <div class="register-chip chip-one">
+                        A+
+                    </div>
+
+                    <div class="register-chip chip-two">
+                        O−
+                    </div>
+
+                    <div class="register-chip chip-three">
+                        B+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 REGISTRATION CARD
+            ================================== -->
+
+            <section class="register-card">
+
+                <div class="login-header">
+
+                    <h2>
+                        Create your account
+                    </h2>
+
+                    <p>
+                        Tell us a little about yourself to get started.
+                    </p>
+
+                </div>
+
+
+                <form
+    class="register-form"
+    id="registerForm"
+    method="POST"
+    action="{{ url_for('auth.register') }}"
+>
+
+                    <!-- =================================
+                         ROLE SELECTION
+                    ================================== -->
+
+                    <div class="register-section">
+
+                        <label class="section-label">
+                            I am registering as
+                        </label>
+
+
+                        <div class="role-options">
+
+
+                            <!-- Donor -->
+
+                            <label class="role-card">
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value="donor"
+                                    checked
+                                >
+
+                                <span class="role-card-content">
+
+                                    <span class="role-icon">
+                                        🩸
+                                    </span>
+
+                                    <span class="role-text">
+
+                                        <strong>
+                                            Blood Donor
+                                        </strong>
+
+                                        <small>
+                                            I want to donate blood
+                                        </small>
+
+                                    </span>
+
+                                </span>
+
+                            </label>
+
+
+                            <!-- Recipient -->
+
+                            <label class="role-card">
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value="recipient"
+                                >
+
+                                <span class="role-card-content">
+
+                                    <span class="role-icon">
+                                        👤
+                                    </span>
+
+                                    <span class="role-text">
+
+                                        <strong>
+                                            Blood Recipient
+                                        </strong>
+
+                                        <small>
+                                            I need blood
+                                        </small>
+
+                                    </span>
+
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================
+                         COMMON INFORMATION
+                    ================================== -->
+
+                    <div class="register-section">
+
+                        <label class="section-label">
+                            Account information
+                        </label>
+
+
+                        <div class="form-group">
+
+                            <label for="fullName">
+                                Full name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fullName"
+                                name="full_name"
+                                placeholder="Enter your full name"
+                                autocomplete="name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="registerEmail">
+                                    Email address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="registerEmail"
+                                    name="email"
+                                    placeholder="you@example.com"
+                                    autocomplete="email"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="phone">
+                                    Phone number
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    placeholder="Enter phone number"
+                                    autocomplete="tel"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="registerPassword">
+                                    Password
+                                </label>
+
+                                <div class="password-wrapper">
+
+                                    <input
+                                        type="password"
+                                        id="registerPassword"
+                                        name="password"
+                                        placeholder="Create a password"
+                                        autocomplete="new-password"
+                                        required
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="password-toggle"
+                                        data-target="registerPassword"
+                                    >
+                                        Show
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="confirmPassword">
+                                    Confirm password
+                                </label>
+
+                                <div class="password-wrapper">
+
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        name="confirm_password"
+                                        placeholder="Repeat your password"
+                                        autocomplete="new-password"
+                                        required
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="password-toggle"
+                                        data-target="confirmPassword"
+                                    >
+                                        Show
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================
+                         DONOR INFORMATION
+                    ================================== -->
+
+                    <div
+                        class="register-section donor-section"
+                        id="donorSection"
+                    >
+
+                        <label class="section-label">
+                            Donor information
+                        </label>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="bloodGroup">
+                                    Blood group
+                                </label>
+
+                                <select
+                                    id="bloodGroup"
+                                    name="blood_group"
+                                >
+
+                                    <option value="">
+                                        Select blood group
+                                    </option>
+
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A−</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B−</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB−</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O−</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="city">
+                                    City / Area
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="city"
+                                    name="city"
+                                    placeholder="e.g. Ludhiana"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-row">
+
+    <!-- Date of Birth -->
+
+    <div class="form-group">
+
+        <label for="dateOfBirth">
+            Date of birth
+        </label>
+
+        <input
+            type="date"
+            id="dateOfBirth"
+            name="date_of_birth"
+            required
+        >
+
+    </div>
+
+
+    <!-- Gender -->
+
+    <div class="form-group">
+
+        <label for="gender">
+            Gender
+        </label>
+
+        <select
+            id="gender"
+            name="gender"
+            required
+        >
+            <option value="">
+                Select gender
+            </option>
+
+            <option value="Male">
+                Male
+            </option>
+
+            <option value="Female">
+                Female
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+<div class="form-row">
+
+    <!-- Weight -->
+
+    <div class="form-group">
+
+        <label for="weight">
+            Weight (kg)
+        </label>
+
+        <input
+            type="number"
+            id="weight"
+            name="weight"
+            min="1"
+            step="0.1"
+            placeholder="Enter your weight"
+            required
+        >
+
+    </div>
+
+
+    <!-- Last Donation -->
+
+    <div class="form-group">
+
+        <label for="lastDonation">
+            Last donation date
+        </label>
+
+        <input
+            type="date"
+            id="lastDonation"
+            name="last_donation_date"
+        >
+
+        <small class="field-hint">
+            If you have never donated, leave this blank.
+        </small>
+
+    </div>
+
+</div>
+
+
+<div class="form-row">
+
+    <!-- Availability -->
+
+    <div class="form-group">
+
+        <label>
+            Current availability
+        </label>
+
+        <label class="availability-option">
+
+            <input
+                type="checkbox"
+                id="available"
+                name="available"
+                checked
+            >
+
+            <span>
+                I am currently available to donate
+            </span>
+
+        </label>
+
+    </div>
+
+</div>
+
+                    </div>
+
+
+
+                    <!-- =================================
+                         TERMS
+                    ================================== -->
+
+                    <label class="terms-checkbox">
+
+                        <input
+                            type="checkbox"
+                            required
+                        >
+
+                        <span>
+                            I agree to the
+                            <a href="#">
+                                terms and conditions
+                            </a>
+                            and understand that my information
+                            will be used to provide the blood
+                            donation service.
+                        </span>
+
+                    </label>
+
+
+
+                    <!-- =================================
+                         SUBMIT
+                    ================================== -->
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                    >
+                        Create account
+                    </button>
+
+
+                </form>
+
+
+                <div class="register-prompt">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                    <a href="{{ url_for('auth.login') }}">
+                        Sign in
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script
+        src="{{ url_for('static', filename='js/register.js') }}"
+    ></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+
+</html>

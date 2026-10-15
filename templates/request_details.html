@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Details | BloodNet</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/donor_requests.css') }}">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">♥</div>
+                <span>BloodNet</span>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <p class="nav-heading">MAIN</p>
+
+                <a href="{{ url_for('donor.dashboard') }}" class="sidebar-link">
+                    <span>⌂</span>
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('donor.requests') }}" class="sidebar-link active">
+                    <span>🩸</span>
+                    Blood Requests
+                </a>
+
+                <a href="#" class="sidebar-link">
+                    <span>🔔</span>
+                    Notifications
+                </a>
+
+                <p class="nav-heading activity-heading">YOUR ACTIVITY</p>
+
+                <a href="#" class="sidebar-link">
+                    <span>📋</span>
+                    Donation History
+                </a>
+
+                <a href="#" class="sidebar-link">
+                    <span>👤</span>
+                    My Profile
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="#" class="sidebar-link">
+                    <span>⚙</span>
+                    Settings
+                </a>
+
+                <a href="#" class="sidebar-link">
+    <span>↪</span>
+    Logout
+</a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <div class="page-header">
+
+                <a href="{{ url_for('donor.requests') }}" class="back-link">
+                    ← Back to Blood Requests
+                </a>
+
+                <h1>Blood Request Details</h1>
+
+                <p>
+                    Review the request details before responding.
+                </p>
+
+            </div>
+
+
+            <!-- REQUEST CARD -->
+            <section class="request-details-card">
+
+                <div class="details-top">
+
+                    <div class="blood-badge large">
+                        {{ blood_request.blood_group }}
+                    </div>
+
+                    <div>
+                        <h2>
+                            {{ blood_request.blood_group }} blood needed
+                        </h2>
+
+                        <span class="urgency
+                            {% if blood_request.urgency == 'Emergency' %}
+                                emergency
+                            {% elif blood_request.urgency == 'Urgent' %}
+                                urgent
+                            {% else %}
+                                normal
+                            {% endif %}
+                        ">
+                            {{ blood_request.urgency }}
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="details-grid">
+
+                    <div class="detail-item">
+                        <span>Units Required</span>
+                        <strong>{{ blood_request.units_required }}</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Hospital</span>
+                        <strong>{{ blood_request.hospital_name }}</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>City</span>
+                        <strong>{{ blood_request.city }}</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Status</span>
+                        <strong>{{ blood_request.status }}</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="message-box">
+
+                    <h3>Message from recipient</h3>
+
+                    <p>
+                        {{ blood_request.message or "No additional message provided." }}
+                    </p>
+
+                </div>
+
+
+                <div class="request-date">
+
+                    Request posted:
+                    {{ blood_request.request_date.strftime('%d %b %Y, %I:%M %p') }}
+
+                </div>
+
+
+                <!-- ACTIONS -->
+                <div class="request-actions">
+
+    {% if response %}
+
+        {% if response.status == "Accepted" %}
+
+            <div class="already-responded accepted">
+                ✓ You have accepted this request
+            </div>
+
+        {% elif response.status == "Rejected" %}
+
+            <div class="already-responded rejected">
+                ✕ You have rejected this request
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <form method="POST"
+              action="{{ url_for('donor.accept_request', request_id=blood_request.request_id) }}">
+
+            <button type="submit" class="accept-button">
+                ✓ Accept Request
+            </button>
+
+        </form>
+
+        <form method="POST"
+              action="{{ url_for('donor.reject_request', request_id=blood_request.request_id) }}">
+
+            <button type="submit" class="reject-button">
+                ✕ Reject
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
