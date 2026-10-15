@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Blood Request | BloodNet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/create_request.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+        <a href="{{ url_for('receiver.dashboard') }}" class="back-link">
+            ← Back to dashboard
+        </a>
+
+        <div class="page-brand">
+
+            <div class="brand-icon">
+                ❤
+            </div>
+
+            <span>BloodNet</span>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main-container">
+
+
+        <!-- INTRO -->
+
+        <div class="intro">
+
+            <span class="page-tag">
+                BLOOD REQUEST
+            </span>
+
+            <h1>
+                Create a blood request
+            </h1>
+
+            <p>
+                Tell us what blood you need and we'll help
+                connect you with eligible donors nearby.
+            </p>
+
+        </div>
+
+
+
+        <!-- FORM CARD -->
+
+        <div class="form-card">
+
+
+          <form method="POST" action="{{ url_for('receiver.create_request') }}">
+
+
+                <!-- BLOOD REQUIREMENT -->
+
+                <div class="form-section">
+
+                    <h2>Blood requirement</h2>
+
+                    <p class="section-description">
+                        Enter the blood type and amount you need.
+                    </p>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="blood-group">
+                                Blood group
+                            </label>
+
+                            <select id="blood-group" name="blood_group" required>
+
+                                <option value="">Select blood group</option>
+
+<option value="A+">A+</option>
+<option value="A-">A-</option>
+<option value="B+">B+</option>
+<option value="B-">B-</option>
+<option value="AB+">AB+</option>
+<option value="AB-">AB-</option>
+<option value="O+">O+</option>
+<option value="O-">O-</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="units">
+                                Units required
+                            </label>
+
+                           <select id="units" name="units" required>
+
+                               <option value="">Select units</option>
+
+<option value="1">1 unit</option>
+<option value="2">2 units</option>
+<option value="3">3 units</option>
+<option value="4">4 units</option>
+<option value="5+">5+ units</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- LOCATION -->
+
+                <div class="form-section">
+
+                    <h2>Location</h2>
+
+                    <p class="section-description">
+                        This helps us prioritize nearby eligible donors.
+                    </p>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="hospital">
+                                Hospital / Location
+                            </label>
+
+                           <input 
+    type="text" 
+    id="hospital" 
+    name="hospital"
+    placeholder="e.g. City Hospital" 
+    required 
+>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="city">
+                                City / Area
+                            </label>
+
+                            <input 
+    type="text" 
+    id="city" 
+    name="city"
+    placeholder="e.g. Ludhiana" 
+    required 
+>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- URGENCY -->
+
+                <div class="form-section">
+
+                    <h2>Urgency</h2>
+
+                    <p class="section-description">
+                        Select how urgently blood is required.
+                    </p>
+
+
+                    <div class="urgency-options">
+
+
+                        <label class="urgency-card">
+
+                            <input
+                                type="radio"
+                                name="urgency"
+                                value="normal"
+                                checked
+                            >
+
+                            <div>
+
+                                <strong>Normal</strong>
+
+                                <span>
+                                    Blood needed soon
+                                </span>
+
+                            </div>
+
+                        </label>
+
+
+
+                        <label class="urgency-card">
+
+                            <input
+                                type="radio"
+                                name="urgency"
+                                value="urgent"
+                            >
+
+                            <div>
+
+                                <strong>Urgent</strong>
+
+                                <span>
+                                    Needed within a short time
+                                </span>
+
+                            </div>
+
+                        </label>
+
+
+
+                        <label class="urgency-card emergency">
+
+                            <input
+                                type="radio"
+                                name="urgency"
+                                value="emergency"
+                            >
+
+                            <div>
+
+                                <strong>Emergency</strong>
+
+                                <span>
+                                    Immediate blood required
+                                </span>
+
+                            </div>
+
+                        </label>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ADDITIONAL INFORMATION -->
+
+                <div class="form-section">
+
+                    <h2>Additional information</h2>
+
+                    <p class="section-description">
+                        Add any information that may help donors.
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label for="message">
+                            Message
+                        </label>
+
+                        <textarea 
+    id="message" 
+    name="message"
+    rows="4" 
+    placeholder="Enter any additional information..."
+></textarea>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SUBMIT -->
+
+                <div class="form-footer">
+
+                    <a
+                        href="{{ url_for('receiver.dashboard') }}"
+                        class="cancel-button"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="submit-button"
+                    >
+                        Submit Blood Request →
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+    </main>
+
+</div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+
+</html>

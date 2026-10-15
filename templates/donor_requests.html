@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blood Requests | Smart Blood Donation Network</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/donor_requests.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <div class="logo-icon">❤</div>
+            <span>BloodNet</span>
+        </div>
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">MAIN</p>
+
+            <a href="{{ url_for('donor.dashboard') }}" class="sidebar-link">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('donor.requests') }}"
+               class="sidebar-link active">
+                <span>🩸</span>
+                Blood Requests
+            </a>
+
+           
+        </div>
+
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">YOUR ACTIVITY</p>
+
+            <a href="{{ url_for('donor.donation_history') }}" class="sidebar-link">
+                <span>📋</span>
+                Donation History
+            </a>
+
+            <a href="{{ url_for('donor.profile') }}" class="sidebar-link">
+                <span>👤</span>
+                My Profile
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+           
+
+            <a href="{{ url_for('home') }}" class="sidebar-link">
+                <span>↪</span>
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    <span>{{ message }}</span>
+                    <button type="button" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <header class="page-header">
+
+            <div>
+                <p class="eyebrow">DONOR NETWORK</p>
+
+                <h1>Blood Requests</h1>
+
+                <p class="page-description">
+                    Find blood requests near you that match your availability.
+                </p>
+            </div>
+
+        </header>
+{% if eligibility_message %}
+    <div class="eligibility-warning">
+        ⚠️ {{ eligibility_message }}
+    </div>
+{% endif %}
+<style>
+    .eligibility-warning {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 10px;
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffe69c;
+        font-weight: 600;
+    }
+</style>
+
+        <!-- SUMMARY -->
+
+        <section class="request-summary">
+
+            <div class="summary-card">
+                <span class="summary-number">
+    {{ nearby_count }}
+</span>
+<span>Nearby requests</span>
+            </div>
+
+            <div class="summary-card emergency-summary">
+               <span class="summary-number">
+    {{ emergency_count }}
+</span>
+<span>Emergency</span>
+            </div>
+
+            <div class="summary-card">
+                <span class="summary-number">
+    {{ urgent_count }}
+</span>
+<span>Urgent</span>
+            </div>
+
+        </section>
+
+
+        <!-- FILTERS -->
+
+        <section class="filters">
+
+            <div class="search-box">
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    placeholder="Search hospital or location..."
+                >
+            </div>
+
+            <select>
+                <option>All blood groups</option>
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+                <option>O+</option>
+                <option>O-</option>
+            </select>
+
+            <select>
+                <option>All urgency levels</option>
+                <option>Emergency</option>
+                <option>Urgent</option>
+                <option>Normal</option>
+            </select>
+
+        </section>
+
+
+        <!-- REQUESTS -->
+
+        <section class="requests-section">
+
+            <div class="section-title-row">
+
+                <div>
+                    <p class="eyebrow">NEARBY</p>
+                    <h2>Requests near you</h2>
+                </div>
+
+                <span class="location-label">
+    📍 Same city
+</span>
+
+            </div>
+
+
+           {% if requests_list %}
+
+    {% for item in requests_list %}
+
+        <article class="request-card">
+
+            <div class="blood-badge">
+                {{ item.request.blood_group }}
+            </div>
+
+
+            <div class="request-info">
+
+                <div class="request-title-row">
+
+                    <h3>
+                        {{ item.request.blood_group }}
+                        blood needed
+                    </h3>
+
+                    <span
+                        class="urgency
+                        {% if item.request.urgency == 'Emergency' %}
+                            emergency
+                        {% elif item.request.urgency == 'Urgent' %}
+                            urgent
+                        {% else %}
+                            normal
+                        {% endif %}"
+                    >
+                        {{ item.request.urgency }}
+                    </span>
+
+                </div>
+
+
+                <p class="hospital-name">
+                    {{ item.request.hospital_name }}
+                </p>
+
+
+                <div class="request-meta">
+
+                    <span>
+                        📍 {{ item.request.city }}
+                    </span>
+
+                    <span>•</span>
+
+                    <span>
+                        {{ item.request.request_date.strftime('%d %b %Y, %I:%M %p') }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+           {% if item.response and item.response.status == "Accepted" %}
+
+    <span class="response-status accepted">
+        ✓ Accepted
+    </span>
+
+{% elif item.response and item.response.status == "Rejected" %}
+
+    <span class="response-status rejected">
+        ✕ Rejected
+    </span>
+
+{% else %}
+
+    <a
+        href="{{ url_for('donor.view_request', request_id=item.request.request_id) }}"
+        class="view-button"
+    >
+        View request →
+    </a>
+
+{% endif %}
+        </article>
+
+    {% endfor %}
+
+{% else %}
+
+    <article class="request-card">
+
+        <div class="request-info">
+
+            <div class="request-title-row">
+
+                <h3>
+                    No matching blood requests
+                </h3>
+
+            </div>
+
+            <p class="hospital-name">
+                There are currently no active requests
+                matching your blood group and eligibility.
+            </p>
+
+            {% if eligibility_message %}
+
+                <div class="request-meta">
+                    <span>
+                        {{ eligibility_message }}
+                    </span>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </article>
+
+{% endif %}
+        </section>
+
+    </main>
+
+</div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+</html>

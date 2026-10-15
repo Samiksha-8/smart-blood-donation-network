@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | Smart Blood Donation Network</title>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <!-- Authentication CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/auth.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =========================================
+         TOP BAR
+    ========================================== -->
+
+    <header class="auth-header">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="auth-logo"
+        >
+
+            <div class="auth-logo-icon">
+                ❤
+            </div>
+
+            <span>
+                Smart Blood Donation Network
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="back-home"
+        >
+            ← Back to home
+        </a>
+
+    </header>
+
+
+
+    <!-- =========================================
+         LOGIN PAGE
+    ========================================== -->
+
+    <main class="auth-page">
+
+        <div class="auth-container">
+
+
+            <!-- =================================
+                 LEFT SIDE
+            ================================== -->
+
+            <section class="auth-intro">
+
+                <span class="auth-badge">
+                    Welcome back
+                </span>
+
+                <h1>
+                    Continue making
+                    <span>a difference.</span>
+                </h1>
+
+                <p>
+                    Sign in to manage your blood requests,
+                    donor availability, notifications,
+                    and connections.
+                </p>
+
+
+                <!-- Small visual -->
+                <div class="auth-visual">
+
+                    <div class="floating-blood blood-one">
+                        A+
+                    </div>
+
+                    <div class="floating-blood blood-two">
+                        O−
+                    </div>
+
+                    <div class="auth-heart">
+                        ❤
+                    </div>
+
+                    <div class="connection-line"></div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 LOGIN CARD
+            ================================== -->
+
+            <section class="login-card">
+
+                <div class="login-header">
+
+                    <h2>
+                        Sign in
+                    </h2>
+
+                    <p>
+                        Enter your account details to continue.
+                    </p>
+
+                </div>
+
+
+                <form
+    class="login-form"
+    id="loginForm"
+    method="POST"
+    action="{{ url_for('auth.login') }}"
+>
+
+
+                    <!-- Email -->
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- Password -->
+
+                    <div class="form-group">
+
+                        <div class="label-row">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <a
+                                href="#"
+                                class="forgot-password"
+                            >
+                                Forgot password?
+                            </a>
+
+                        </div>
+
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="passwordToggle"
+                                aria-label="Show password"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Remember me -->
+
+                    <label class="remember-me">
+
+                        <input
+                            type="checkbox"
+                            name="remember"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+
+
+                    <!-- Login -->
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                    >
+                        Sign in
+                    </button>
+
+
+                </form>
+
+
+                <!-- Register -->
+
+                <div class="register-prompt">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                   <a href="{{ url_for('auth.register') }}" class="create-account">
+    Create one
+</a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script
+        src="{{ url_for('static', filename='js/auth.js') }}"
+    ></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+
+</html>

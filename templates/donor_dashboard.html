@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Donor Dashboard | Smart Blood Donation Network</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+    <a
+        href="{{ url_for('home') }}"
+        class="dashboard-logo"
+    >
+
+        <div class="dashboard-logo-icon">
+            ❤
+        </div>
+
+        <span>
+            BloodNet
+        </span>
+
+    </a>
+
+
+    <nav class="sidebar-nav">
+
+        <p class="nav-label">
+            MAIN
+        </p>
+
+        <a href="#" class="sidebar-link active">
+            <span>⌂</span>
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('donor.requests') }}" class="sidebar-link">
+    <span>🩸</span>
+    Blood Requests
+</a>
+
+
+        <p class="nav-label">
+            YOUR ACTIVITY
+        </p>
+
+        <a href="{{ url_for('donor.donation_history') }}" class="sidebar-link">
+    📋
+    Donation History
+</a>
+
+        <a href="{{ url_for('donor.profile') }}" class="sidebar-link">
+            <span>👤</span>
+            My Profile
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="sidebar-link logout-link"
+        >
+            <span>↪</span>
+            Logout
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<main class="dashboard-main">
+
+
+    <!-- TOP BAR -->
+
+    <header class="dashboard-header">
+
+        <button
+            class="mobile-menu"
+            id="mobileMenu"
+            type="button"
+        >
+            ☰
+        </button>
+
+
+        <div>
+
+            <p class="dashboard-eyebrow">
+                DONOR DASHBOARD
+            </p>
+
+            <h1>
+                Good morning 👋
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Here's what's happening with your donor profile.
+            </p>
+
+        </div>
+
+
+        <div class="header-profile">
+
+            <div class="header-avatar">
+                RS
+            </div>
+
+            <div class="header-user">
+
+                <strong>
+    {{ session.get("user_name", "Donor") }}
+</strong>
+
+                <span>
+                    Blood Donor
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================
+         SUMMARY CARDS
+    ========================================== -->
+
+    <section class="summary-grid">
+
+
+        <!-- Eligibility -->
+
+        <div class="summary-card eligibility-card">
+
+            <div class="summary-icon">
+                ✓
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    DONATION STATUS
+                </span>
+
+                <h2>
+    {% if eligible %}
+        Eligible
+    {% else %}
+        Not Eligible
+    {% endif %}
+</h2>
+
+<p>
+    {% if eligible %}
+        You can currently donate blood.
+    {% else %}
+        {{ reason }}
+    {% endif %}
+</p>
+
+            </div>
+
+            <span class="status-dot">
+    {% if eligible %}
+        Active
+    {% else %}
+        Waiting
+    {% endif %}
+</span>
+
+        </div>
+
+
+        <!-- Blood Group -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon blood-icon">
+                🩸
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    BLOOD GROUP
+                </span>
+
+                <h2>
+    {{ donor.blood_group }}
+</h2>
+
+                <p>
+                    Your registered blood group
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Nearby Requests -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon location-icon">
+                📍
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    NEARBY REQUESTS
+                </span>
+
+                <h2>
+    {{ nearby_count }}
+</h2>
+
+                <p>
+                    Matching requests near you
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================
+         CONTENT GRID
+    ========================================== -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- =====================================
+             BLOOD REQUESTS
+        ====================================== -->
+
+        <div class="dashboard-card requests-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-kicker">
+                        NEARBY
+                    </span>
+
+                    <h2>
+                        Blood requests
+                    </h2>
+
+                </div>
+
+                <a href="{{ url_for('donor.requests') }}">
+    View all →
+</a>
+
+            </div>
+
+
+            <div class="request-list">
+                {% for item in matching_requests %}
+
+<div class="request-item">
+
+    <div class="blood-badge">
+        {{ item.request.blood_group }}
+    </div>
+
+    <div class="request-info">
+
+        <strong>
+            {{ item.request.blood_group }} blood needed
+        </strong>
+
+        <span>
+            {{ item.request.hospital_name }}
+            · {{ item.request.city }}
+        </span>
+
+    </div>
+
+    <span class="urgency">
+        {{ item.request.urgency }}
+    </span>
+
+    <a href="{{ url_for('donor.view_request', request_id=item.request.request_id) }}">
+        View
+    </a>
+
+</div>
+
+{% else %}
+
+<p>No matching blood requests available.</p>
+
+{% endfor %}
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             DONOR STATUS
+        ====================================== -->
+
+        <div class="dashboard-card status-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-kicker">
+                        YOUR STATUS
+                    </span>
+
+                    <h2>
+                        Donation availability
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="availability-box">
+
+                <div class="availability-top">
+
+                    <div class="availability-status">
+
+                        <span class="online-dot"></span>
+
+                        <strong>
+    {% if donor.is_available %}
+        Available to donate
+    {% else %}
+        Not available
+    {% endif %}
+</strong>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+    type="checkbox"
+    id="availabilityToggle"
+    {% if donor.is_available %}checked{% endif %}
+>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+                <p>
+    {% if donor.is_available %}
+        Your profile can currently appear in eligible donor searches.
+    {% else %}
+        Your profile will not appear in donor searches.
+    {% endif %}
+</p>
+
+            </div>
+
+
+            <div class="donation-detail">
+
+                <div>
+
+                    <span>
+                        Last donation
+                    </span>
+
+                    <strong>
+                       {% if donor.last_donation_date %}
+    {{ donor.last_donation_date }}
+{% else %}
+    Never donated
+{% endif %}
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Eligibility
+                    </span>
+
+                    <strong class="eligible-text">
+    {% if eligible %}
+        Eligible now
+    {% else %}
+        {{ reason }}
+    {% endif %}
+</strong>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('donor.profile') }}"
+                class="primary-small-button"
+            >
+                Update profile
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}"
+></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+
+</html>

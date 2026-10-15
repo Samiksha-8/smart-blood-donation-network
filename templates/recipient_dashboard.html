@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recipient Dashboard | Smart Blood Donation Network</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/recipient_dashboard.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <div class="logo-icon">
+                ❤
+            </div>
+
+            <span>BloodNet</span>
+
+        </div>
+
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">MAIN</p>
+
+            <a href="#" class="sidebar-link active">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('receiver.find_donors') }}" class="sidebar-link">
+    <span>📍</span>
+    Find Donors
+</a>
+
+            <a href="{{ url_for('receiver.my_requests') }}" class="sidebar-link">
+    <span>🩸</span>
+    My Requests
+</a>
+        
+
+        </div>
+
+
+        <div class="sidebar-section activity-section">
+
+            <p class="sidebar-label">YOUR ACTIVITY</p>
+
+            <a href="{{ url_for('receiver.profile') }}" class="sidebar-link">
+    <span>👤</span>
+    My Profile
+</a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            
+            <a href="/" class="sidebar-link">
+                <span>↪</span>
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <div class="top-bar">
+
+            <div>
+                <h1>Good morning 👋</h1>
+
+                <p>
+                    Here's what's happening with your blood requests.
+                </p>
+            </div>
+
+
+            <div class="user-info">
+
+                <div class="user-avatar">
+    {{ user_name[0] }}{{ user_name.split(' ')[-1][0] if ' ' in user_name else '' }}
+</div>
+
+                <div>
+                    <strong>{{ user_name }}</strong>
+                    <span>Blood Recipient</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= SUMMARY CARDS ================= -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon blood-icon">
+                    🩸
+                </div>
+
+                <div>
+
+                    <span class="summary-label">
+    REQUESTED BLOOD GROUP
+</span>
+
+<h2>
+    {{ latest_request.blood_group if latest_request else '--' }}
+</h2>
+
+<p>
+    From your latest blood request
+</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon request-icon">
+                    📋
+                </div>
+
+                <div>
+
+                    <span class="summary-label">
+                        ACTIVE REQUESTS
+                    </span>
+
+                    <h2>{{ active_requests }}</h2>
+
+                    <p>
+                        Currently active request
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon donor-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <span class="summary-label">
+                        NEARBY DONORS
+                    </span>
+
+                    <strong>{{ nearby_donors }}</strong>
+
+                    <p>
+                        Potential donors nearby
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= MAIN GRID ================= -->
+
+        <section class="content-grid">
+
+
+            <!-- CREATE REQUEST -->
+
+            <div class="panel create-request-panel">
+
+                <span class="panel-label">
+                    NEED BLOOD?
+                </span>
+
+                <h2>
+                    Create a blood request
+                </h2>
+
+                <p>
+                    Tell us what blood you need and we'll help
+                    you find eligible donors nearby.
+                </p>
+
+                <a href="{{ url_for('receiver.create_request') }}" class="primary-button">
+    Create Blood Request →
+</a>
+
+            </div>
+
+
+            <!-- REQUEST STATUS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span class="panel-label">
+                            YOUR REQUEST
+                        </span>
+
+                        <h2>
+                            Latest request
+                        </h2>
+                    </div>
+
+                    <span class="status-badge">
+    {% if latest_request %}
+        {{ latest_request.status }}
+    {% else %}
+        No Request
+    {% endif %}
+</span>
+
+                </div>
+
+
+                <div class="request-info">
+<div class="blood-group-box">
+    {{ latest_request.blood_group if latest_request else '--' }}
+</div>
+
+<div class="request-details">
+
+    <h3>
+        {% if latest_request %}
+            {{ latest_request.blood_group }} blood needed
+        {% else %}
+            No blood request yet
+        {% endif %}
+    </h3>
+
+    <p>
+        {% if latest_request %}
+            {{ latest_request.hospital_name }}
+        {% else %}
+            Create a request to get started
+        {% endif %}
+    </p>
+
+    <span>
+        📍
+        {% if latest_request %}
+            {{ latest_request.city }}
+        {% else %}
+            --
+        {% endif %}
+    </span>
+
+</div>
+
+                </div>
+
+
+                <div class="request-footer">
+
+                    <div>
+    
+{% if latest_request %}
+
+    <strong>{{ fulfilled_units }} / {{ latest_request.units_required }}</strong>
+
+    <span>
+        units fulfilled
+    </span>
+
+{% else %}
+
+    <strong>0 / 0</strong>
+
+    <span>
+        units fulfilled
+    </span>
+
+{% endif %}
+
+</div>
+
+                    {% if latest_request %}
+<a href="{{ url_for('receiver.request_details', request_id=latest_request.request_id) }}"
+   class="view-request">
+    View request →
+</a>
+{% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= QUICK ACTIONS ================= -->
+
+        <section class="panel quick-actions">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-label">
+                        QUICK ACTIONS
+                    </span>
+
+                    <h2>
+                        What would you like to do?
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="action-grid">
+
+                <a href="{{ url_for('receiver.find_donors') }}" class="action-card">
+
+                    <div class="action-icon">
+                        📍
+                    </div>
+
+                    <div>
+                        <h3>Find Donors</h3>
+
+                        <p>
+                            Search for eligible donors near you.
+                        </p>
+                    </div>
+
+                    <span>→</span>
+
+                </a>
+
+
+                <a href="{{ url_for('receiver.my_requests') }}" class="action-card">
+
+                    <div class="action-icon">
+                        🩸
+                    </div>
+
+                    <div>
+                        <h3>My Requests</h3>
+
+                        <p>
+                            View and manage your blood requests.
+                        </p>
+                    </div>
+
+                    <span>→</span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+</body>
+</html>
