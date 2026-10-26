@@ -1123,3 +1123,60 @@ body {
 .terms-checkbox a:hover {
     text-decoration: underline;
 }
+
+.validation-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 25, 40, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+}
+
+.validation-popup {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18);
+}
+
+.validation-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: #ffe5e5;
+    color: #e5252a;
+    font-size: 30px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.validation-popup h3 {
+    margin: 0 0 10px;
+    color: #171923;
+}
+
+.validation-popup p {
+    color: #626879;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.validation-popup button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #e5252a;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}

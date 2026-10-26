@@ -150,6 +150,33 @@
     action="{{ url_for('auth.register') }}"
 >
 
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="validation-modal" id="validationModal">
+            <div class="validation-popup">
+                <div class="validation-icon">!</div>
+
+                {% for category, message in messages %}
+                    <h3>
+                        {% if category == 'error' %}
+                            Please check your details
+                        {% else %}
+                            Notification
+                        {% endif %}
+                    </h3>
+
+                    <p>{{ message }}</p>
+                {% endfor %}
+
+                <button type="button" id="closeValidationModal">
+                    Okay, I'll fix it
+                </button>
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+
                     <!-- =================================
                          ROLE SELECTION
                     ================================== -->

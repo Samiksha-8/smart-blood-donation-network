@@ -10,6 +10,12 @@ from models.donation_history import DonationHistory
 from services.eligibility import check_donor_eligibility
 from services.recommendation import get_compatible_blood_groups
 
+from services.validation import (
+    valid_city,
+    valid_hospital_name,
+    VALID_BLOOD_GROUPS
+)
+from services.validation import valid_person_name, valid_email
 
 receiver_bp = Blueprint("receiver", __name__)
 
@@ -85,34 +91,52 @@ def dashboard():
 
 @receiver_bp.route("/recipient/create-request", methods=["GET", "POST"])
 def create_request():
-
     if request.method == "POST":
-
         receiver_id = session.get("user_id")
 
         if not receiver_id:
             flash("Please login first.", "error")
             return redirect(url_for("auth.login"))
 
-        blood_group = request.form.get("blood_group")
-        units = request.form.get("units")
-        hospital_name = request.form.get("hospital")
-        city = request.form.get("city")
-        urgency = request.form.get("urgency")
-        message = request.form.get("message")
+        blood_group = request.form.get("blood_group", "").strip()
+        units = request.form.get("units", "").strip()
+        hospital_name = request.form.get("hospital", "").strip()
+        city = request.form.get("city", "").strip()
+        urgency = request.form.get("urgency", "").strip().lower()
+        message = request.form.get("message", "").strip()
 
-        if units == "5+":
-            units_required = 5
-        else:
-            units_required = int(units)
+        if blood_group not in VALID_BLOOD_GROUPS:
+            flash("Please select a valid blood group.", "error")
+            return redirect(url_for("receiver.create_request"))
+
+        if units not in {"1", "2", "3", "4", "5+"}:
+            flash("Please select a valid number of units.", "error")
+            return redirect(url_for("receiver.create_request"))
+
+        if not valid_hospital_name(hospital_name):
+            flash("Please enter a valid hospital or location name.", "error")
+            return redirect(url_for("receiver.create_request"))
+
+        if not valid_city(city):
+            flash("Please enter a valid city name.", "error")
+            return redirect(url_for("receiver.create_request"))
 
         urgency_map = {
             "normal": "Normal",
             "urgent": "Urgent",
-            "emergency": "Emergency"
+            "emergency": "Emergency",
         }
-
         urgency_value = urgency_map.get(urgency)
+
+        if not urgency_value:
+            flash("Please select a valid urgency level.", "error")
+            return redirect(url_for("receiver.create_request"))
+
+        if len(message) > 1000:
+            flash("The message cannot exceed 1000 characters.", "error")
+            return redirect(url_for("receiver.create_request"))
+
+        units_required = 5 if units == "5+" else int(units)
 
         new_request = BloodRequest(
             receiver_id=receiver_id,
@@ -122,19 +146,21 @@ def create_request():
             city=city,
             urgency=urgency_value,
             message=message,
-            status="Pending"
+            status="Pending",
         )
 
-        db.session.add(new_request)
-        db.session.commit()
+        try:
+            db.session.add(new_request)
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()
+            print("Create blood request error:", error)
+            flash("Could not create the blood request. Please try again.", "error")
+            return redirect(url_for("receiver.create_request"))
 
         flash("Blood request created successfully!", "success")
-
         return redirect(
-            url_for(
-                "receiver.find_donors",
-                request_id=new_request.request_id
-            )
+            url_for("receiver.find_donors", request_id=new_request.request_id)
         )
 
     return render_template("create_request.html")
@@ -374,7 +400,6 @@ def record_donation(request_id, donor_id):
     )
 @receiver_bp.route("/recipient/profile", methods=["GET", "POST"])
 def profile():
-
     receiver_id = session.get("user_id")
 
     if not receiver_id:
@@ -382,35 +407,49 @@ def profile():
         return redirect(url_for("auth.login"))
 
     user = User.query.filter_by(user_id=receiver_id).first()
-
     if not user:
         flash("User not found.", "error")
         return redirect(url_for("receiver.dashboard"))
 
     if request.method == "POST":
-
         full_name = request.form.get("full_name", "").strip()
-        email = request.form.get("email", "").strip()
+        email = request.form.get("email", "").strip().lower()
         phone = request.form.get("phone", "").strip()
 
         if not full_name or not email or not phone:
             flash("Please fill all profile fields.", "error")
             return redirect(url_for("receiver.profile"))
 
+        if not valid_person_name(full_name):
+            flash("Please enter a valid name without numbers.", "error")
+            return redirect(url_for("receiver.profile"))
+
+        if not valid_email(email):
+            flash("Please enter a valid email address.", "error")
+            return redirect(url_for("receiver.profile"))
+
+        existing_email = User.query.filter(
+            User.email == email,
+            User.user_id != user.user_id,
+        ).first()
+        if existing_email:
+            flash("This email is already registered.", "error")
+            return redirect(url_for("receiver.profile"))
+
         user.full_name = full_name
         user.email = email
-        user.phone = phone
+        user.phone = phone  # No phone-number format validation added.
 
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()
+            print("Recipient profile update error:", error)
+            flash("Could not update your profile. Please try again.", "error")
+            return redirect(url_for("receiver.profile"))
 
-        # Update session name so dashboard immediately shows new name
         session["user_name"] = user.full_name
-
         flash("Profile updated successfully!", "success")
-
         return redirect(url_for("receiver.profile"))
 
-    return render_template(
-        "recipient_profile.html",
-        user=user
-    )
+    return render_template("recipient_profile.html", user=user)

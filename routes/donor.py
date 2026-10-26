@@ -8,6 +8,11 @@ from flask import (
     request,
     jsonify
 )
+from services.validation import (
+    valid_person_name,
+    valid_email,
+    valid_city
+)
 from datetime import datetime
 from models.donor import DonorProfile
 from models.blood_request import BloodRequest
@@ -512,79 +517,76 @@ def donation_history():
 
 @donor_bp.route("/profile", methods=["GET", "POST"])
 def profile():
-
     donor_user_id = session.get("user_id")
 
     if not donor_user_id:
         flash("Please login first.", "error")
         return redirect(url_for("auth.login"))
 
-    user = User.query.filter_by(
-        user_id=donor_user_id
-    ).first()
-
-    donor = DonorProfile.query.filter_by(
-        user_id=donor_user_id
-    ).first()
+    user = User.query.filter_by(user_id=donor_user_id).first()
+    donor = DonorProfile.query.filter_by(user_id=donor_user_id).first()
 
     if not user or not donor:
         flash("Profile not found.", "error")
         return redirect(url_for("donor.dashboard"))
 
     if request.method == "POST":
+        full_name = request.form.get("full_name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        phone = request.form.get("phone", "").strip()
+        city = request.form.get("city", "").strip()
+        weight_string = request.form.get("weight", "").strip()
 
-        full_name = request.form.get(
-            "full_name", ""
-        ).strip()
+        if not full_name or not email or not phone or not city or not weight_string:
+            flash("Please fill all profile fields.", "error")
+            return redirect(url_for("donor.profile"))
 
-        email = request.form.get(
-            "email", ""
-        ).strip()
+        if not valid_person_name(full_name):
+            flash("Please enter a valid name without numbers.", "error")
+            return redirect(url_for("donor.profile"))
 
-        phone = request.form.get(
-            "phone", ""
-        ).strip()
+        if not valid_email(email):
+            flash("Please enter a valid email address.", "error")
+            return redirect(url_for("donor.profile"))
 
-        city = request.form.get(
-            "city", ""
-        ).strip()
+        existing_email = User.query.filter(
+            User.email == email,
+            User.user_id != user.user_id,
+        ).first()
+        if existing_email:
+            flash("This email is already registered.", "error")
+            return redirect(url_for("donor.profile"))
 
-        weight = request.form.get(
-            "weight", ""
-        ).strip()
+        if not valid_city(city):
+            flash("Please enter a valid city name without numbers.", "error")
+            return redirect(url_for("donor.profile"))
 
-        if not full_name or not email or not phone or not city or not weight:
-            flash(
-                "Please fill all profile fields.",
-                "error"
-            )
+        try:
+            weight = float(weight_string)
+        except (TypeError, ValueError):
+            flash("Please enter a valid weight.", "error")
+            return redirect(url_for("donor.profile"))
 
-            return redirect(
-                url_for("donor.profile")
-            )
+        if not 50 <= weight <= 300:
+            flash("Weight must be between 50 kg and 300 kg.", "error")
+            return redirect(url_for("donor.profile"))
 
         user.full_name = full_name
         user.email = email
-        user.phone = phone
-
+        user.phone = phone  # No phone-number format validation added.
         donor.city = city
-        donor.weight = float(weight)
+        donor.weight = weight
 
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()
+            print("Donor profile update error:", error)
+            flash("Could not update your profile. Please try again.", "error")
+            return redirect(url_for("donor.profile"))
 
         session["user_name"] = user.full_name
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for("donor.profile"))
 
-        flash(
-            "Profile updated successfully!",
-            "success"
-        )
-
-        return redirect(
-            url_for("donor.profile")
-        )
-
-    return render_template(
-        "donor_profile.html",
-        user=user,
-        donor=donor
-    )
+    return render_template("donor_profile.html", user=user, donor=donor)
